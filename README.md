@@ -20,8 +20,8 @@ This workshop will showcase applications from other organizations that use R and
 The agenda for this workshop can be found [here](https://github.com/TC-piRatecat-2018/Introduction/blob/master/Agenda/agenda.md).
 
 This repository contains the following content for the _Introduction_ portion of the agenda:
-* What is R and why learn it?
+* [What is R and why learn it?](https://github.com/TC-piRatecat-2018/Introduction/tree/master/R-learn-it)
 * What's an object?
 * What do cats have to do with vehicles traveling on I-5?  
 
-Last updated: 2018-07-19
+Last updated: 2018-07-20
