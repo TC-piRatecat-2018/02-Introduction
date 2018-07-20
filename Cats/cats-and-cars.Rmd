@@ -3,16 +3,23 @@ title: "Can the number of cat adoptions predict the volume of traffic?"
 output: html_notebook
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+_This is a short introductory example of using R that demonstrates simple processes for cleaning and visualizing data and basic statistical analysis. This report was generated using R Markdown Notebook. In no way should the objective of this example be taken seriously, nor do they reflect the views of the instructors or organization sponsors of this course._
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+# Objective
+The feline species are found everywhere in urban areas. Although the vast population of felines do not have "thumbs" to manipulate a steering wheel, increasing research and developement of autonomous vehicles might render their anatomical barrier moot. In preparation of the eventual takeover of autonomous vehicles do we see their infilitration to human households increasing? If so, we first must investigate if there's any relationship between the number of cat adoptions with volume of traffic.
 
-```{r}
-plot(cars)
+# Methods & Results
+## Data sources
+
+## Data cleanup
+
+```{r libraries}
+library(tidyverse)
+library(lubridate)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+## Data visualization
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+## Statistics
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+# Conclusions
