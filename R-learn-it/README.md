@@ -27,5 +27,5 @@ For people new to programming learning R can be daunting but the long term benef
 
 ## Acknowledgements & Additional Resources
 
-Last updated: 2018-07-20
+Last updated: 2018-07-20  
 Back to [Introduction](https://github.com/TC-piRatecat-2018/Introduction)
