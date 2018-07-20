@@ -1,10 +1,28 @@
-# What is R?
+## What is R?
 
 "R" refers to the programming language and software used to run scripts written in R.
 
-# Why Learn R?
+## Why Learn R?
+For people new to programming learning R can be daunting but the long term benefits outweigh the frustrations of the initial learning curve.
+
+<figure align = "center">
+<img src="https://github.com/TC-piRatecat-2018/Introduction/blob/master/R-learn-it/images/xkcd1667.png" width="1000">
+<figcaption>Credit: https://xkcd.com/1667/ </figcaption>
+</figure>
+
+### Reproducibility
 
 
-# What is RStudio?
+### Big and Small Data
 
-# Acknowledgements & Additional Resources
+### Packages
+
+### Visualizations
+
+### Customization
+
+### Open Source Community
+
+## What is RStudio?
+
+## Acknowledgements & Additional Resources
