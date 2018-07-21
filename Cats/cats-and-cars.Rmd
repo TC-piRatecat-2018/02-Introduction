@@ -1,24 +1,78 @@
 ---
 title: "Can the number of cat adoptions predict the volume of traffic?"
-output: html_notebook
+output: html_document
+editor_options: 
+  chunk_output_type: inline
 ---
 
-_This is a short introductory example of using R that demonstrates simple processes for cleaning and visualizing data and basic statistical analysis. This report was generated using R Markdown Notebook. In no way should the objective of this example be taken seriously, nor do they reflect the views of the instructors or organization sponsors of this course._
+_This is a short introductory example of using R that demonstrates simple processes for cleaning and visualizing data and basic statistical analysis. This report was generated using R Markdown Notebook. In no way should the objective of this example be taken seriously, nor do they reflect the views of the instructors or organization sponsors of this workshop._
 
 # Objective
 The feline species are found everywhere in urban areas. Although the vast population of felines do not have "thumbs" to manipulate a steering wheel, increasing research and developement of autonomous vehicles might render their anatomical barrier moot. In preparation of the eventual takeover of autonomous vehicles do we see their infilitration to human households increasing? If so, we first must investigate if there's any relationship between the number of cat adoptions with volume of traffic.
 
 # Methods & Results
 ## Data sources
+Monthly traffic volume data were downloaded from the PORTAL website (https://portal.its.pdx.edu) for the Alberta to NB I-5 station for all years available.
+
+Yearly animal services trends are reported by Multnomah County Animal Services (MCAS) (https://multcopets.org/reports-and-agency-statistics). All reporting by MCAS is presented in a non machine readable format and has been converted into a csv file prior to use for this example. Data reported by MCAS is done once per fiscal year which ranges from July through June.
 
 ## Data cleanup
-
-```{r libraries}
+```{r show libraries, eval = F}
+# Load libraries needed for tidying data.
+library(tidyverse)
+library(lubridate)
+```
+```{r run libraries, include = F, echo = F}
+# Load libraries needed for tidying data.
 library(tidyverse)
 library(lubridate)
 ```
 
+```{r read in data}
+# Read in data files.
+alberta_raw <- read.csv("data/I5-NB-Alberta.csv", stringsAsFactors = F, strip.white = T)
+cats_raw <- read.csv("data/cats.csv", stringsAsFactors = F, strip.white = T)
+```
+```{r examine traffic data}
+# Examine traffic data structure.
+str(alberta_raw)
+
+# Delete rows of incomplete data
+alberta <- alberta_raw[complete.cases(alberta_raw),]
+
+# Convert "starttime" into class POSIXct
+alberta$starttime <- mdy_hm(alberta$starttime, tz = "America/Los_Angeles")
+
+# Check for completeness of data
+alberta_year <- alberta %>%
+  mutate(year = year(starttime))
+table(alberta_year$year)
+alberta_fy <- alberta_year %>%
+  filter(starttime > "2005-06-30" & starttime < "2015-07-01")
+
+# Creative way of Aggregating volume by fiscal year, July through June
+alberta_fy$fy.adjust <- seq(ymd("2005-01-01"), ymd("2014-12-31"), by = "month")
+alberta_fy <- alberta_fy %>%
+  group_by(Fiscal.Year = year(fy.adjust)) %>%
+  summarise(FY.Volume = sum(volume))
+alberta_fy
+```
+```{r examine cat data}
+str(cats_raw)
+
+cats <- cats_raw %>%
+  filter(between(Fiscal.Year, 2005, 2014))
+cats
+```
 ## Data visualization
+```{r datatable of combined sources}
+alberta_cats <- left_join(alberta_fy, cats, by = "Fiscal.Year")
+
+alberta_cats_fig <- alberta_cats %>%
+  ggplot(aes(x = Adopt, y = FY.Volume))+
+  geom_point()
+plot(alberta_cats_fig)
+```
 
 ## Statistics
 
