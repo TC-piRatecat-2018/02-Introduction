@@ -17,6 +17,7 @@ Monthly traffic volume data were downloaded from the PORTAL website (https://por
 Yearly animal services trends are reported by Multnomah County Animal Services (MCAS) (https://multcopets.org/reports-and-agency-statistics). All reporting by MCAS is presented in a non machine readable format and has been converted into a csv file prior to use for this example. Data reported by MCAS is done once per fiscal year which ranges from July through June.
 
 ## Data cleanup
+A fair amount of data cleanup happens prior to any analysis; however, with R and packages like Tidyverse make the process of data wrangling less painful. The process of cleaning and tidying data is recorded in each line of code that is written. This makes it easier and faster to catch and fix mistakes for large and small datasets. Below is an example of working with a fairly tidy dataset.
 ```{r show libraries, eval = F}
 # Load libraries needed for tidying data.
 library(tidyverse)
@@ -50,7 +51,7 @@ table(alberta_year$year)
 alberta_fy <- alberta_year %>%
   filter(starttime > "2005-06-30" & starttime < "2015-07-01")
 
-# Creative way of Aggregating volume by fiscal year, July through June
+# Creative way of aggregating volume by fiscal year, July through June
 alberta_fy$fy.adjust <- seq(ymd("2005-01-01"), ymd("2014-12-31"), by = "month")
 alberta_fy <- alberta_fy %>%
   group_by(Fiscal.Year = year(fy.adjust)) %>%
@@ -58,13 +59,18 @@ alberta_fy <- alberta_fy %>%
 alberta_fy
 ```
 ```{r examine cat data}
+# Examine cat data
 str(cats_raw)
 
+# Filter cat data for available years corresponding to traffic data.
 cats <- cats_raw %>%
   filter(between(Fiscal.Year, 2005, 2014))
 cats
 ```
+
 ## Data visualization
+There are a number of visualization packages for R that allow the user to creating and customizing simple static figures to creating and customizing interactive maps and applications. Below are some basic examples of generating plots to examine the cat and traffic data.
+
 ```{r datatable of combined sources}
 alberta_cats <- left_join(alberta_fy, cats, by = "Fiscal.Year")
 
@@ -77,3 +83,6 @@ plot(alberta_cats_fig)
 ## Statistics
 
 # Conclusions
+
+Last updated: 2018-07-23  
+Back to [Introduction](https://github.com/TC-piRatecat-2018/Introduction)

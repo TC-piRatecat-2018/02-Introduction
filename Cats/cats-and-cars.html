@@ -139,6 +139,7 @@ $(document).ready(function () {
 </div>
 <div id="data-cleanup" class="section level2">
 <h2>Data cleanup</h2>
+<p>A fair amount of data cleanup happens prior to any analysis; however, with R and packages like Tidyverse make the process of data wrangling less painful. The process of cleaning and tidying data is recorded in each line of code that is written. This makes it easier and faster to catch and fix mistakes for large and small datasets. Below is an example of working with a fairly tidy dataset.</p>
 <pre class="r"><code># Load libraries needed for tidying data.
 library(tidyverse)
 library(lubridate)</code></pre>
@@ -167,7 +168,7 @@ table(alberta_year$year)</code></pre>
 <pre class="r"><code>alberta_fy &lt;- alberta_year %&gt;%
   filter(starttime &gt; &quot;2005-06-30&quot; &amp; starttime &lt; &quot;2015-07-01&quot;)
 
-# Creative way of Aggregating volume by fiscal year, July through June
+# Creative way of aggregating volume by fiscal year, July through June
 alberta_fy$fy.adjust &lt;- seq(ymd(&quot;2005-01-01&quot;), ymd(&quot;2014-12-31&quot;), by = &quot;month&quot;)
 alberta_fy &lt;- alberta_fy %&gt;%
   group_by(Fiscal.Year = year(fy.adjust)) %&gt;%
@@ -186,12 +187,14 @@ alberta_fy</code></pre>
 ##  8        2012      8785
 ##  9        2013      7317
 ## 10        2014      7773</code></pre>
-<pre class="r"><code>str(cats_raw)</code></pre>
+<pre class="r"><code># Examine cat data
+str(cats_raw)</code></pre>
 <pre><code>## 'data.frame':    37 obs. of  3 variables:
 ##  $ Fiscal.Year      : int  1981 1982 1983 1984 1985 1986 1987 1988 1989 1990 ...
 ##  $ Total.Live.Intake: int  4224 4963 5086 1013 3811 4012 3999 3992 3994 5000 ...
 ##  $ Adopt            : int  NA NA 212 224 195 200 252 238 266 311 ...</code></pre>
-<pre class="r"><code>cats &lt;- cats_raw %&gt;%
+<pre class="r"><code># Filter cat data for available years corresponding to traffic data.
+cats &lt;- cats_raw %&gt;%
   filter(between(Fiscal.Year, 2005, 2014))
 cats</code></pre>
 <pre><code>##    Fiscal.Year Total.Live.Intake Adopt
@@ -208,6 +211,7 @@ cats</code></pre>
 </div>
 <div id="data-visualization" class="section level2">
 <h2>Data visualization</h2>
+<p>There are a number of visualization packages for R that allow the user to creating and customizing simple static figures to creating and customizing interactive maps and applications. Below are some basic examples of generating plots to examine the cat and traffic data.</p>
 <pre class="r"><code>alberta_cats &lt;- left_join(alberta_fy, cats, by = &quot;Fiscal.Year&quot;)
 
 alberta_cats_fig &lt;- alberta_cats %&gt;%
@@ -222,6 +226,8 @@ plot(alberta_cats_fig)</code></pre>
 </div>
 <div id="conclusions" class="section level1">
 <h1>Conclusions</h1>
+<p>Last updated: 2018-07-23<br />
+Back to <a href="https://github.com/TC-piRatecat-2018/Introduction">Introduction</a></p>
 </div>
 
 
