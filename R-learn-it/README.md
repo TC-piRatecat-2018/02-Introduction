@@ -31,5 +31,5 @@ Grolemund & Wickham, 2017, [R for Data Science](http://r4ds.had.co.nz/)
 [Stack Overflow](https://stackoverflow.com/)  
 
 
-Last updated: 2018-07-26
+Last updated: 2018-07-26  
 Back to [Introduction](https://github.com/TC-piRatecat-2018/Introduction)
