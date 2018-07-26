@@ -22,6 +22,7 @@ The agenda for this workshop can be found [here](https://github.com/TC-piRatecat
 This repository contains the following content for the _Introduction_ portion of the agenda:
 * [What is R and why learn it?](https://github.com/TC-piRatecat-2018/Introduction/tree/master/R-learn-it)
 * [What's an object?](https://github.com/TC-piRatecat-2018/Introduction/tree/master/Objectify)
-* [What do cats have to do with vehicles traveling on I-5?](https://github.com/TC-piRatecat-2018/Introduction/tree/master/Cats)
+* [What do cats have to do with vehicles traveling on I-5?](http://htmlpreview.github.io/?https://github.com/TC-piRatecat-2018/Introduction/blob/master/Cats/cats-and-cars.html)
 
-Last updated: 2018-07-25
+Last updated: 2018-07-26  
+[Feedback](https://github.com/TC-piRatecat-2018/Introduction/issues)
