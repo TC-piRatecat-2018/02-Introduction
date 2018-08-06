@@ -1,7 +1,8 @@
 ---
 title: "Can the number of cat adoptions predict the volume of traffic?"
-output: html_document
-editor_options: 
+output:
+  html_document: default
+editor_options:
   chunk_output_type: inline
 ---
 _Learning Objectives_  
