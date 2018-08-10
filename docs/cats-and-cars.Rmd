@@ -1,0 +1,167 @@
+---
+title: "Can the number of cat adoptions predict the volume of traffic?"
+output:
+  html_document: default
+editor_options:
+  chunk_output_type: inline
+---
+_Learning Objectives_  
+_* Provide an example that demonstrates how to read in a flat file, perform minimal data cleaning and tidying using dplyr and tidyr, introduce dataframes and why their structure matters, generate basic data visualization examples using ggplot2, and using a linear regression for analyzing data._  
+_* The introductory example demonstrates the use of RMarkdown to generate a single reproducible report._
+_*In no way should the objective of this example be taken seriously, nor do they reflect the views of the instructors or organization sponsors of this workshop._
+
+# Objective
+The feline species are found everywhere in urban areas. Although the vast population of felines do not have "thumbs" to manipulate a steering wheel, increasing research and developement of autonomous vehicles might render their anatomical barrier moot. In preparation of the eventual takeover of autonomous vehicles do we see their infilitration to human households increasing? If so, the objective of this study is to first investigate if there's any relationship between the number of cat adoptions with volume of traffic.
+
+# Methods & Results
+## Data sources
+Monthly traffic volume data were downloaded from the PORTAL website (https://portal.its.pdx.edu) for the Alberta to NB I-5 station for all years available.
+
+Yearly animal services trends are reported by Multnomah County Animal Services (MCAS) (https://multcopets.org/reports-and-agency-statistics). All reporting by MCAS is presented in a non machine readable format and has been converted into a csv file prior to use for this example. Data reported by MCAS is aggregated by fiscal year (July through June).
+
+## Data cleanup
+A fair amount of data cleanup happens prior to any analysis; however, with R and packages like Tidyverse make the process of data wrangling less painful. The process of cleaning and tidying data is recorded in each line of code that is written. This makes it easier and faster to catch and fix mistakes for large and small datasets. Below is an example of working with a fairly tidy dataset.
+```{r show libraries, eval = F}
+# Load libraries needed for tidying data.
+library(tidyverse)
+library(lubridate)
+library(DT)
+```
+```{r run libraries, include = F, echo = F}
+# Load libraries needed for tidying data.
+library(tidyverse)
+library(lubridate)
+library(DT)
+```
+
+```{r read in data}
+# Read in data files.
+alberta_raw <- read.csv("data/I5-NB-Alberta.csv", stringsAsFactors = F, strip.white = T)
+cats_raw <- read.csv("data/cats.csv", stringsAsFactors = F, strip.white = T)
+```
+```{r examine traffic data}
+# Examine traffic data structure.
+str(alberta_raw)
+
+# Delete rows of incomplete data
+alberta <- alberta_raw[complete.cases(alberta_raw),]
+
+# Convert "starttime" into class POSIXct
+alberta$starttime <- mdy_hm(alberta$starttime, tz = "America/Los_Angeles")
+
+# Check for completeness of data
+alberta_year <- alberta %>%
+  mutate(year = year(starttime))
+table(alberta_year$year)
+
+# Subset (filter) data by starttime for complete range of continous counts
+alberta_fy <- alberta_year %>%
+  filter(starttime > "2005-06-30" & starttime < "2015-07-01")
+
+# Creative way of aggregating volume by fiscal year, July through June
+alberta_fy$fy.adjust <- seq(ymd("2005-01-01"), ymd("2014-12-31"), by = "month")
+alberta_fy <- alberta_fy %>%
+  group_by(Fiscal.Year = year(fy.adjust)) %>%
+  summarise(FY.Volume = sum(volume))
+alberta_fy
+```
+```{r examine cat data}
+# Examine cat data
+str(cats_raw)
+
+# Filter cat data for available years corresponding to traffic data.
+cats <- cats_raw %>%
+  filter(between(Fiscal.Year, 2005, 2014))
+cats
+```
+
+## Data visualization
+There are a number of visualization packages for R that allow the user to creating and customizing simple static figures to creating and customizing interactive maps and applications. Below are some basic examples of generating plots to examine the cat and traffic data.
+
+Prior to visualizing data a few additional steps of tidying data are required. Traffic volume and cat adoptions were initially two separate data files that were cleaned. The next step would be to combine the two datasets into a useable dataframe.
+
+```{r datatable of combined sources and figures of data}
+# There are many ways of combining datasets, the follow example uses dplyr::left_join
+alberta_cats <- left_join(alberta_fy, cats, by = "Fiscal.Year")
+alberta_cats$Fiscal.Year <- as.character(alberta_cats$Fiscal.Year)
+alberta_cats
+```
+```{r gather data}
+# transforming data into another useable dataframe structure
+trans_cats <- alberta_cats %>%
+  gather("variable", "count", 2:4)
+trans_cats
+```
+
+There are now two dataframes, _alberta\_cats_ and _trans\_cats_, that contain the same data but organized in two different ways. The difference of having dataframes arranged differently becomes more apparent when trying to do different types of visualizations and analyses.
+```{r scrolling dataframe of gathered data, echo = F, include = F}
+# Dataframe structure after using dplyr::gather
+options(DT.fillContainer = T)
+datatable(trans_cats, rownames = F, 
+          caption = "trans_cats dataframe after using gather function",
+          width = "600px",
+          options = list(
+            searching = F,
+            pageLength = 30
+            )) 
+```
+
+```{r plots}
+# Fiscal year trends of total cat intake, cat adoptions, and car volume over time using trans_cats
+fy_trends_fig <- trans_cats %>%
+  ggplot(aes(x = Fiscal.Year, y = count)) +
+  geom_bar(stat = "identity") +
+  facet_grid(variable ~ ., scales = "free") +
+  ggtitle("Figure 1. Cat adoptions, volume of cars (FY.Volume), and total live intake of cats (Total.Live.Intake)") +
+  theme(plot.title = element_text(size = 8))
+fy_trends_fig
+```
+Figure 1 shows the number of total live cat intakes, total cat adoptions, and car volume for the I-5 Alberta highway station per fiscal year. From FY2010 through FY2013, figure 1 shows a gradual decrease across all variables and then an observable increase across all variables in 2014. Figures 2 and 3, below, plot the relationships of adoption and total live intake with car volume.
+
+```{r catterplots, echo = T, include = F}
+library(CatterPlots)
+```
+```{r catterplot plot1}
+# Plotting relationship between cat adoptions and volume of cars uses the alberta_cats dataframe
+cars_adopt_figure <- catplot(xs = alberta_cats$Adopt, ys = alberta_cats$FY.Volume, 
+                             cat = 5, catcolor = "#33FCFF", size = 0.2,
+                             canvas = c(-0.1, 1.8, -0.1, 1.2),
+                             xlab = "Cat adoptions", ylab = "Volume of cars",
+                             main = "Figure 2. Cat adoptions versus volume of cars")
+```
+```{r catterplot plot2}
+# Plotting relationship between intake of live cats and volume of cars uses the alberta_cats dataframe
+cars_adopt_figure <- alberta_cats %>%
+  ggplot(aes(x = Total.Live.Intake, y = FY.Volume)) +
+  geom_point() +
+  labs(title = "Figure 3. Total live intake of cats versus volume of cars",
+       x = "Total live intake of cats", y = "Volume of cars") +
+  theme(plot.title = element_text(size = 8))
+cars_adopt_figure
+```
+
+Figure 2 shows zero relationship between cat adoptions and volume of cars. Figure 3 suggests that there could be a possible relationship between total live intake of cats and volume of cars.
+
+## Statistics
+To test if there's a significant relationship between total live intake and volume of vehicles, and disregarding any statistical assumptions about normality, heteroscedasity, independent sample, sampling size, and data being representive of the population, we implement a simple linear regression:
+```{r linear regression call}
+# Correlation using alberta_cats dataframe
+cor(alberta_cats$Total.Live.Intake, alberta_cats$FY.Volume)
+
+# Linear regression using alberta_cats dataframe
+lm_cats <- lm(FY.Volume ~ Total.Live.Intake, data = alberta_cats)
+lm_cats
+
+# Linear regression summary
+summary(lm_cats)
+```
+
+Wow. There is a "significant" positive relationship between total live intake of cats and volume of vehicles recorded at the I-5 at Alberta highway station.
+
+# Conclusions
+There is no relationship between cat adoptions and volume of cars recorded at the I-5 at Alberta highway station. However, there is a positive relationship between total live intake of cats and vehicle volume. 
+
+This example demostrates some of the basic functions and capabilities of using R for reproducible data wrangling and analysis.
+
+Last updated: 2018-07-26  
+Back to [Introduction](https://github.com/TC-piRatecat-2018/Introduction)
